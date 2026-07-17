@@ -1,0 +1,129 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: DWZ Vereinsliste 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-01 00:00:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: dwz-verein-list.php:34
+msgid "DWZ Vereinsliste"
+msgstr "DWZ Vereinsliste"
+
+#: includes/class-dwz-widget.php:17
+msgid "Zeigt die DWZ-Liste eines Schachvereins basierend auf der ZPS-Nummer"
+msgstr "Zeigt die DWZ-Liste eines Schachvereins basierend auf der ZPS-Nummer"
+
+#: includes/class-dwz-widget.php:43
+msgid "ZPS-Nummer nicht konfiguriert"
+msgstr "ZPS-Nummer nicht konfiguriert"
+
+#: includes/class-dwz-widget.php:58
+msgid "Fehler beim Abrufen der DWZ-Liste:"
+msgstr "Fehler beim Abrufen der DWZ-Liste:"
+
+#: includes/class-dwz-widget.php:82
+msgid "Pl."
+msgstr "Pl."
+
+#: includes/class-dwz-widget.php:83
+msgid "Name"
+msgstr "Name"
+
+#: includes/class-dwz-widget.php:84
+msgid "DWZ"
+msgstr "DWZ"
+
+#: includes/class-dwz-widget.php:85
+msgid "Index"
+msgstr "Index"
+
+#: includes/class-dwz-widget.php:122
+msgid "DWZ-Daten vom Deutschen Schachbund (Stand: %s)"
+msgstr "DWZ-Daten vom Deutschen Schachbund (Stand: %s)"
+
+#: includes/class-dwz-block.php:202
+msgid "DWZ-Daten vom Deutschen Schachbund und Elo-Daten von fideratings.com (Stand: %s)"
+msgstr "DWZ-Daten vom Deutschen Schachbund und Elo-Daten von fideratings.com (Stand: %s)"
+
+#: includes/class-dwz-block.php:203
+msgid "Erstellt mit dem Wordpress-Plugin \"DWZ-Liste\" von Marius Nürenberg."
+msgstr "Erstellt mit dem Wordpress-Plugin \"DWZ-Liste\" von Marius Nürenberg."
+
+#: dwz-verein-list.php:77
+msgid "Spielerdaten werden geladen..."
+msgstr "Spielerdaten werden geladen..."
+
+#: dwz-verein-list.php:78
+msgid "Die Spielerdaten konnten nicht geladen werden."
+msgstr "Die Spielerdaten konnten nicht geladen werden."
+
+#: dwz-verein-list.php:79
+msgid "Elo-Entwicklung"
+msgstr "Elo-Entwicklung"
+
+#: dwz-verein-list.php:80
+msgid "Keine Elo-Historie verfügbar."
+msgstr "Keine Elo-Historie verfügbar."
+
+#: includes/class-dwz-widget.php:134
+msgid "Keine Daten verfügbar"
+msgstr "Keine Daten verfügbar"
+
+#: includes/class-dwz-widget.php:153
+msgid "Titel:"
+msgstr "Titel:"
+
+#: includes/class-dwz-widget.php:160
+msgid "z.B. DWZ-Liste unseres Vereins"
+msgstr "z.B. DWZ-Liste unseres Vereins"
+
+#: includes/class-dwz-widget.php:167
+msgid "ZPS-Nummer des Vereins:"
+msgstr "ZPS-Nummer des Vereins:"
+
+#: includes/class-dwz-widget.php:175
+msgid "z.B. 30052"
+msgstr "z.B. 30052"
+
+#: includes/class-dwz-widget.php:176
+msgid "Die ZPS-Nummer ist die eindeutige Nummer des Schachvereins im Deutschen Schachbund"
+msgstr "Die ZPS-Nummer ist die eindeutige Nummer des Schachvereins im Deutschen Schachbund"
+
+#: includes/class-dwz-api.php:30
+msgid "ZPS-Nummer ist erforderlich"
+msgstr "ZPS-Nummer ist erforderlich"
+
+#: includes/class-dwz-api.php:49
+msgid "API-Fehler: %s"
+msgstr "API-Fehler: %s"
+
+#: includes/class-dwz-api.php:56
+msgid "API-Fehler: HTTP %d"
+msgstr "API-Fehler: HTTP %d"
+
+#: includes/class-dwz-api.php:65
+msgid "API hat leere Antwort gesendet"
+msgstr "API hat leere Antwort gesendet"
+
+#: includes/class-dwz-api.php:75
+msgid "Fehler beim Parsen der API-Daten oder keine Spieler gefunden"
+msgstr "Fehler beim Parsen der API-Daten oder keine Spieler gefunden"
+
+#: includes/class-dwz-api.php:117
+msgid "PKZ ist erforderlich"
+msgstr "PKZ ist erforderlich"
+
+#: includes/class-dwz-api.php:193
+msgid "FIDE-ID ist erforderlich"
+msgstr "FIDE-ID ist erforderlich"
+
+#: includes/class-dwz-api.php:289
+msgid "FIDE-API-Fehler: HTTP %d"
+msgstr "FIDE-API-Fehler: HTTP %d"

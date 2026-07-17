@@ -1,0 +1,57 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "dwz-verein-list/dwz-list",
+	"version": "1.0.0",
+	"title": "DWZ-Liste",
+	"category": "widgets",
+	"icon": "list-view",
+	"description": "Zeigt die DWZ-Liste eines Schachvereins.",
+	"textdomain": "dwz-verein-list",
+	"editorScript": "file:./assets/js/editor.js",
+	"editorStyle": "file:./assets/dwz-styles.css",
+	"style": "file:./assets/dwz-styles.css",
+	"supports": {
+		"html": false,
+		"reusable": true,
+		"anchor": true
+	},
+	"attributes": {
+		"vkz": {
+			"type": "string",
+			"default": ""
+		},
+		"showElo": {
+			"type": "boolean",
+			"default": true
+		},
+		"showRapid": {
+			"type": "boolean",
+			"default": true
+		},
+		"showBlitz": {
+			"type": "boolean",
+			"default": true
+		},
+		"showStatus": {
+			"type": "boolean",
+			"default": true
+		},
+		"showNation": {
+			"type": "boolean",
+			"default": true
+		},
+		"showTitle": {
+			"type": "boolean",
+			"default": true
+		},
+		"showIndex": {
+    		"type": "boolean",
+    		"default": true
+		},
+		"clubName": {
+    		"type": "string",
+    		"default": ""
+		}
+	}
+}
