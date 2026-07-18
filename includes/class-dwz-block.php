@@ -174,7 +174,7 @@ class DWZ_Block {
             $fide_profile_url = '';
 
             if (!empty($nuLigaPersonId)) {
-                $dsb_profile_url = 'https://www.schachbund.de/spieler/' . rawurlencode($nuLigaPersonId);
+                $dsb_profile_url = 'https://www.schachbund.de/spieler.html?search=' . rawurlencode($lastname . ',' . $firstname);
             }
 
             if (!empty($fideId)) {
@@ -229,7 +229,7 @@ class DWZ_Block {
 
             // Status-Spalte
             if($show_status){
-                $html .= '<td class="dwz-col-status" style="text-align: center;" title="' . esc_attr__('Passiv', 'dwz-verein-list') . '">' . esc_html($status) . '</td>';
+                $html .= '<td class="dwz-col-status" style="text-align: center;" title="' . esc_attr__('Status: ' . ($status === 'P' ? 'Passiv' : 'Aktiv'), 'dwz-verein-list') . '">' . esc_html($status) . '</td>';
             }
 
             // Nationalität-Spalte
@@ -450,6 +450,7 @@ class DWZ_Block {
             'ERI' => 'Eritrea',
             'EST' => 'Estland',
             'ETH' => 'Äthiopien',
+            'FID' => 'Fide',
             'FIN' => 'Finnland',
             'FRA' => 'Frankreich',
             'GAB' => 'Gabun',
@@ -487,7 +488,7 @@ class DWZ_Block {
             'KWT' => 'Kuwait',
             'KGZ' => 'Kirgisistan',
             'LAO' => 'Laos',
-            'LVA' => 'Lettland',
+            'LAT' => 'Lettland',
             'LBN' => 'Libanon',
             'LSO' => 'Lesotho',
             'LBR' => 'Liberia',
@@ -558,7 +559,7 @@ class DWZ_Block {
             'SDN' => 'Sudan',
             'SUR' => 'Suriname',
             'SWE' => 'Schweden',
-            'CHE' => 'Schweiz',
+            'SUI' => 'Schweiz',
             'SYR' => 'Syrien',
             'TWN' => 'Taiwan',
             'TJK' => 'Tadschikistan',

@@ -7,6 +7,23 @@
     box-sizing: border-box;
 }
 
+/* Tabelle anpassen für kleine Bildschirme */
+@media (max-width: 600px) {
+    .dwz-table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        font-size: 0.7em;
+    }
+}
+
+.dwz-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-bottom: 1em;
+}
+
 .dwz-info {
     font-size: 12px;
     color: #999;
@@ -37,10 +54,6 @@
     margin-bottom: 1em;
 }
 
-.dwz-elo-graph canvas {
-    display: block;
-    max-width: 100%;
-}
 
 .wp-block-dwz-verein-list-editor .components-base-control {
     margin-bottom: 12px;
