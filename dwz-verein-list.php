@@ -159,12 +159,12 @@ function dwz_verein_list_register_rest_routes() {
 add_action( 'rest_api_init', 'dwz_verein_list_register_rest_routes' );
 
 /**
- * Admin-Seite für Cache-Verwaltung hinzufügen
+ * Admin-Seite für Plugin-Verwaltung hinzufügen
  */
 function dwz_verein_list_add_admin_page() {
     add_management_page(
-        __( 'DWZ Cache verwalten', 'dwz-verein-list' ),
-        __( 'DWZ Cache', 'dwz-verein-list' ),
+        __( 'DWZ-Liste verwalten', 'dwz-verein-list' ),
+        __( 'DWZ-Liste', 'dwz-verein-list' ),
         'manage_options',
         'dwz-verein-list-cache',
         'dwz_verein_list_cache_admin_page'
