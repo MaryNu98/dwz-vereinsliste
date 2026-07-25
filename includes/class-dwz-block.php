@@ -174,7 +174,7 @@ class DWZ_Block {
             $fide_profile_url = '';
 
             if (!empty($nuLigaPersonId)) {
-                $dsb_profile_url = 'https://www.schachbund.de/spieler.html?search=' . rawurlencode($lastname . ',' . $firstname);
+                $dsb_profile_url = 'https://www.schachbund.de/dwz-spieler/' . rawurlencode($nuLigaPersonId) . '.html';
             }
 
             if (!empty($fideId)) {
@@ -307,7 +307,7 @@ class DWZ_Block {
         $html .= '<p class="dwz-info">';
         if ($show_elo) {
             $html .= sprintf(
-                esc_html__('DWZ-Daten vom Deutschen Schachbund (Stand: %s) und Elo-Daten der FIDE (Stand: %s)', 'dwz-verein-list'),
+                esc_html__('DWZ-Daten vom Deutschen Schachbund (Stand: %s) und Elo-Daten der FIDE (Stand: %s).', 'dwz-verein-list'),
                 $dwz_data_date,
                 $fide_data_date
             );
