@@ -27,6 +27,7 @@ class DWZ_Block {
      */
     public static function render_block($attributes) {
         $vkz = isset($attributes['vkz']) ? sanitize_text_field($attributes['vkz']) : '';
+        $apiToken = isset($attributes['apiToken']) ? sanitize_text_field($attributes['apiToken']) : '';
         $show_elo = isset($attributes['showElo']) ? (bool) $attributes['showElo'] : true;
         $show_rapid = isset($attributes['showRapid']) ? (bool) $attributes['showRapid'] : true;
         $show_blitz = isset($attributes['showBlitz']) ? (bool) $attributes['showBlitz'] : true;
@@ -42,27 +43,22 @@ class DWZ_Block {
                        esc_html__('Kein Verein konfiguriert.', 'dwz-verein-list') . 
                        '</div>';
         } else {
-            // VKZ-Nummer formatieren, wenn es sich um einen Verband handelt. Es werden einfach die Nullen am Ende der VKZ entfernt, damit die API alle Spieler im Verband zurückliefert. 
-            // Die Ladezeit kann dadurch deutlich länger sein, da viele Spieler geladen werden.
-            // Landesverband
-            if (strrpos($vkz, '0000') !== false && strrpos($vkz, '0000') === strlen($vkz) - 4) {
-                $vkz = substr_replace($vkz, '', -4);
+            // API-Token prüfen
+            if (empty($apiToken)) {
+                $output .= '<div class="dwz-block-error">' .
+                           esc_html__('Kein API-Token konfiguriert.', 'dwz-verein-list') . 
+                           '</div>';
             }
-            // Regionalverband
-            if (strrpos($vkz, '00') !== false && strrpos($vkz, '00') === strlen($vkz) - 2) {
-                $vkz = substr_replace($vkz, '', -2);
-            }
-
             // DWZ-Liste abrufen
-            $verein_data = DWZ_API::get_verein_list($vkz);
+            $data = DWZ_API::get_verein_list($vkz, $apiToken);
             
-            if (is_wp_error($verein_data)) {
+            if (is_wp_error($data)) {
                 $output .= '<div class="dwz-block-error">';
                 $output .= '<strong>' . esc_html__('Fehler beim Abrufen der DWZ-Liste:', 'dwz-verein-list') . '</strong><br>';
-                $output .= wp_kses_post($verein_data->get_error_message());
+                $output .= wp_kses_post($data->get_error_message());
                 $output .= '</div>';
             } else {
-                $output .= self::render_table($vkz, $verein_data, $show_elo, $show_rapid, $show_blitz, $show_status, $show_nation, $show_title, $showIndex);
+                $output .= self::render_table($vkz, $data, $show_elo, $show_rapid, $show_blitz, $show_status, $show_nation, $show_title, $showIndex);
             }
         }
         
@@ -89,7 +85,14 @@ class DWZ_Block {
         if (!is_array($data) || empty($data)) {
             return '<p class="dwz-no-data">' . esc_html__('Keine Daten verfügbar', 'dwz-verein-list') . '</p>';
         }
-        
+
+        $data_date = isset($data['stand']) ? sanitize_text_field($data['stand']) : '';
+        $formatted_data_date = self::format_data_date($data_date);
+
+        $playerList = self::get_player_list($data);
+
+
+        // Tabelle erzeugen
         $html = '<div class="dwz-container">';
         $html .= '<table class="dwz-table">';
         $html .= '<thead>';
@@ -98,7 +101,7 @@ class DWZ_Block {
         $html .= '<th class="dwz-col-name">' . esc_html__('Name', 'dwz-verein-list') . '</th>';
          
          // Titel-Spalte
-        if($show_elo && $show_title){
+        if($show_title){
             $html .= '<th class="dwz-col-title" style="text-align: center;" title="' . esc_attr__('FIDE-Titel', 'dwz-verein-list') . '">' . esc_html__('T', 'dwz-verein-list') . '</th>';
         }
         // Status-Spalte
@@ -106,7 +109,7 @@ class DWZ_Block {
             $html .= '<th class="dwz-col-status" style="text-align: center;" title="' . esc_attr__('Status: P = Passiv', 'dwz-verein-list') . '">' . esc_html__('S', 'dwz-verein-list') . '</th>';
         }
         // Nationalität-Spalte
-        if($show_elo && $show_nation){
+        if($show_nation){
             $html .= '<th class="dwz-col-nation" style="text-align: center;" title="' . esc_attr__('Nationalität', 'dwz-verein-list') . '">' . esc_html__('Land', 'dwz-verein-list') . '</th>';
         }
        
@@ -121,13 +124,16 @@ class DWZ_Block {
 
         if ($show_elo) {
             $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Elo', 'dwz-verein-list') . '</th>';
-            if ($show_rapid) {
-                $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Rapid', 'dwz-verein-list') . '</th>';
-            }
-            if ($show_blitz) {
-                $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Blitz', 'dwz-verein-list') . '</th>';
-            }
         }
+        
+        if ($show_rapid) {
+            $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Rapid', 'dwz-verein-list') . '</th>';
+        }
+        
+        if ($show_blitz) {
+            $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Blitz', 'dwz-verein-list') . '</th>';
+        }
+        
         $html .= '</tr>';
         $html .= '</thead>';
         $html .= '<tbody>';
@@ -135,41 +141,21 @@ class DWZ_Block {
 
         // Für jeden Spieler in den Daten wird eine Tabellenzeile erstellt, die die entsprechenden Informationen enthält. Die FIDE-Daten werden nur dargestellt, wenn die Option aktiviert ist und eine FIDE-ID vorhanden ist.
         $counter = 1;
-        foreach ($data as $spieler) {
+        foreach ($playerList as $spieler) {
             $spieler_json = esc_attr(wp_json_encode($spieler));
-            $nuLigaPersonId = isset($spieler['nuLigaPersonId']) ? sanitize_text_field($spieler['nuLigaPersonId']) : '';
-            $lastname = isset($spieler['lastname']) ? sanitize_text_field($spieler['lastname']) : '';
-            $firstname = isset($spieler['firstname']) ? sanitize_text_field($spieler['firstname']) : '';
-            $dwz = isset($spieler['rating']) ? intval($spieler['rating']) : 0;
-            $dwzindex = isset($spieler['index']) ? intval($spieler['index']) : 0;
+            $nuLigaPersonId = isset($spieler['id']) ? sanitize_text_field($spieler['id']) : '';
+            $lastname = isset($spieler['nachname']) ? sanitize_text_field($spieler['nachname']) : '';
+            $firstname = isset($spieler['vorname']) ? sanitize_text_field($spieler['vorname']) : '';
+            $dwz = isset($spieler['dwz']) ? intval($spieler['dwz']) : 0;
+            $dwzindex = isset($spieler['dwzIndex']) ? intval($spieler['dwzIndex']) : 0;
             $fideId = isset($spieler['fideId']) ? intval($spieler['fideId']) : 0;
-            $membership = isset($spieler['membership']) ? intval($spieler['membership']) : 0;
-            $status = ''; 
-            $fideData = []; 
+            $standard_elo = isset($spieler['elo']) ? intval($spieler['elo']) : 0;
+            $rapid_elo = isset($spieler['eloSchnell']) ? intval($spieler['eloSchnell']) : 0;
+            $blitz_elo = isset($spieler['eloBlitz']) ? intval($spieler['eloBlitz']) : 0;
+            $federation = isset($spieler['nation']) ? sanitize_text_field($spieler['nation']) : '';
+            $title = isset($spieler['titel']) ? sanitize_text_field($spieler['titel']) : '';
+            $status = isset($spieler['status']) ? sanitize_text_field($spieler['status']) : '';
 
-            // Wenn FIDE-ID vorhanden, FIDE-Daten des Spielers aus der lokalen SQLite-Datenbank abrufen
-            if ($fideId !== null && $show_elo) {
-                $fideData = FIDE_SQLite::get_player_by_fide_id($fideId);
-                if (is_wp_error($fideData)) {
-                    error_log($fideData->get_error_message());
-                    $fideData = [];
-                }
-            }
-
-            // Überprüfen, ob der Spieler passiv im ausgewählten Verein ist
-            foreach (($spieler['memberships'] ?? []) as $membership) {
-                if (($membership['vkz'] ?? '') === $vkz
-                    && strtoupper($membership['licenceState'] ?? '') === 'PASSIVE') {
-                    $status = 'P';
-                    break;
-                }
-            }
-
-            $federation = null;
-            $title = null;
-            $standard_elo = null;
-            $rapid_elo = null;
-            $blitz_elo = null;
             $dsb_profile_url = '';
             $fide_profile_url = '';
 
@@ -181,26 +167,6 @@ class DWZ_Block {
                 $fide_profile_url = 'https://ratings.fide.com/profile/' . rawurlencode((string) $fideId);
             }
 
-            // FIDE-Daten darstellen, wenn die Option aktiviert ist und eine FIDE-ID vorhanden ist
-            if ($show_elo && !empty($fideId) && !empty($fideData)) {
-                $standard_elo = isset($fideData['standard_rating']) ? $fideData['standard_rating'] : null;
-                $rapid_elo = isset($fideData['rapid_rating']) ? $fideData['rapid_rating'] : null;
-                $blitz_elo = isset($fideData['blitz_rating']) ? $fideData['blitz_rating'] : null;
-                $federation   = $fideData['federation'] ?? '';
-                $title        = self::normalize_fide_title($fideData['title'] ?? '');
-
-                if ($standard_elo === 0) {
-                    $standard_elo = null;
-                }
-
-                if ($rapid_elo === 0) {
-                    $rapid_elo = null;
-                }
-
-                if ($blitz_elo === 0) {
-                    $blitz_elo = null;
-                }
-            }
 
             $html .= '<tr>';
 
@@ -223,17 +189,18 @@ class DWZ_Block {
             $html .= '</td>';
             
             // Titel-Spalte
-            if($show_elo && $show_title){
+            if($show_title){
                 $html .= '<td class="dwz-col-title" style="text-align: center;" title="' . esc_attr__('Titel: ' . $title, 'dwz-verein-list') . '">' . esc_html($title) . '</td>';
             }
 
             // Status-Spalte
             if($show_status){
+                $status = $status === 'P' ? 'P' : ''; // Nur "P" für Passiv anzeigen, sonst leer
                 $html .= '<td class="dwz-col-status" style="text-align: center;" title="' . esc_attr__('Status: ' . ($status === 'P' ? 'Passiv' : 'Aktiv'), 'dwz-verein-list') . '">' . esc_html($status) . '</td>';
             }
 
             // Nationalität-Spalte
-            if($show_elo && $show_nation){
+            if($show_nation){
                 if (empty($federation)) {
                     $html .= '<td class="dwz-col-nation"></td>';
                 } else {
@@ -267,28 +234,29 @@ class DWZ_Block {
                 }
             }
 
-            // Elo-Spalten
+            // Elo-Spalten anzeigen
             if ($show_elo) {
                 if ($standard_elo) {
                     $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Standard-Elo', 'dwz-verein-list') . '">' . intval($standard_elo) . '</td>';
                 } else {
                     $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Standard-Elo', 'dwz-verein-list') . '"></td>';
                 }
-                if ($show_rapid) {
-                    if ($rapid_elo) {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-verein-list') . '">' . intval($rapid_elo) . '</td>';
-                    } else {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-verein-list') . '"></td>';
-                    }
-                }
-                if ($show_blitz) {
-                    if ($blitz_elo) {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-verein-list') . '">' . intval($blitz_elo) . '</td>';
-                    } else {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-verein-list') . '"></td>';
-                    }
+            }
+            if ($show_rapid) {
+                if ($rapid_elo) {
+                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-verein-list') . '">' . intval($rapid_elo) . '</td>';
+                } else {
+                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-verein-list') . '"></td>';
                 }
             }
+            if ($show_blitz) {
+                if ($blitz_elo) {
+                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-verein-list') . '">' . intval($blitz_elo) . '</td>';
+                } else {
+                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-verein-list') . '"></td>';
+                }
+            }
+            
             $html .= '</tr>';
 
             $counter++;
@@ -297,26 +265,13 @@ class DWZ_Block {
         $html .= '</tbody>';
         $html .= '</table>';
         
-        // Info-Text
-        $dwz_data_date = date_i18n(get_option('date_format'));
-        $fide_data_timestamp = FIDE_SQLite::get_last_import_time();
-        $fide_data_date = $fide_data_timestamp
-            ? date_i18n(get_option('date_format'), strtotime($fide_data_timestamp))
-            : esc_html__('noch nicht geladen', 'dwz-verein-list');
-
+        // Info-Text        
         $html .= '<p class="dwz-info">';
-        if ($show_elo) {
             $html .= sprintf(
-                esc_html__('DWZ-Daten vom Deutschen Schachbund (Stand: %s) und Elo-Daten der FIDE (Stand: %s).', 'dwz-verein-list'),
-                $dwz_data_date,
-                $fide_data_date
+                esc_html__('Daten vom Deutschen Schachbund (Stand: %s).', 'dwz-verein-list'),
+                $formatted_data_date
             );
-        } else {
-            $html .= sprintf(
-                esc_html__('DWZ-Daten vom Deutschen Schachbund (Stand: %s).', 'dwz-verein-list'),
-                $dwz_data_date
-            );
-        }
+        
         $html .= '<br>';
         $html .= esc_html__('Erstellt mit dem Wordpress-Plugin "DWZ-Vereinsliste" von Marius Nürenberg.', 'dwz-verein-list');
         $html .= '</p>';
@@ -326,31 +281,17 @@ class DWZ_Block {
         return $html;
     }
 
-    private static function normalize_fide_title($title) {
-        if ($title === null) {
-            return null;
+    private static function format_data_date($date_string) {
+        if (empty($date_string)) {
+            return '';
         }
 
-        $title = trim((string) $title);
-        if ($title === '') {
-            return null;
+        $timestamp = strtotime($date_string);
+        if ($timestamp === false) {
+            return sanitize_text_field($date_string);
         }
 
-        $normalized = strtoupper(preg_replace('/[^A-Z0-9]/', '', $title));
-        if ($normalized === '' || $normalized === 'NONE' || $normalized === 'N/A' || $normalized === 'NA') {
-            return null;
-        }
-
-        $blacklist = array('NA', 'NAR', 'NAT', 'NATIONALARBITER', 'NI', 'NIA', 'FA', 'IA', 'CA', 'SR', 'TR', 'AR', 'ARB', 'ARBITER');
-        if (in_array($normalized, $blacklist, true)) {
-            return null;
-        }
-
-        if (preg_match('/^[A-Z0-9]{2,4}$/', $normalized)) {
-            return $normalized;
-        }
-
-        return null;
+        return gmdate('d. F Y, H:i \U\h\r', $timestamp);
     }
 
     private static function get_country_flag_markup($federation) {
@@ -382,6 +323,27 @@ class DWZ_Block {
         }
 
         return '';
+    }
+
+    private static function get_player_list($data) {
+        if (!is_array($data) || empty($data['spieler']) || !is_array($data['spieler'])) {
+            return array();
+        }
+
+        $playerList = $data['spieler'];
+
+        usort($playerList, function ($a, $b) {
+            $dwzA = isset($a['dwz']) ? (int) $a['dwz'] : 0;
+            $dwzB = isset($b['dwz']) ? (int) $b['dwz'] : 0;
+
+            if ($dwzA === $dwzB) {
+                return 0;
+            }
+
+            return ($dwzA < $dwzB) ? 1 : -1;
+        });
+
+        return $playerList;
     }
 
     private static function get_country_name_from_code($code) {

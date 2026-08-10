@@ -28,6 +28,7 @@ registerBlockType('dwz-verein-list/dwz-list', {
 
         const {
             vkz,
+            apiToken,
             showStatus,
             showNation,
             showTitle,
@@ -40,72 +41,6 @@ registerBlockType('dwz-verein-list/dwz-list', {
         const blockProps = useBlockProps({
             className: 'wp-block-dwz-verein-list-editor'
         });
-
-        const [clubs, setClubs] = useState([]);
-        const [search, setSearch] = useState('');
-        const [loading, setLoading] = useState(true);
-        const [error, setError] = useState(false);
-
-        useEffect(() => {
-
-            const url =
-                window.location.origin +
-                '/wp-json/dwz/v1/clubs';
-
-            fetch(url)
-                .then((response) => {
-
-                    if (!response.ok) {
-                        throw new Error(
-                            'HTTP Fehler: ' + response.status
-                        );
-                    }
-
-                    return response.json();
-                })
-                .then((data) => {
-
-                    const mappedClubs = (data.data || []).map(
-                        (club) => ({
-                            vkz: String(club.clubVkz),
-                            name: club.clubName
-                        })
-                    );
-
-                    setClubs(mappedClubs);
-                    setLoading(false);
-                })
-                .catch((err) => {
-
-                    console.error(
-                        'Fehler beim Laden der Vereine:',
-                        err
-                    );
-
-                    setError(true);
-                    setLoading(false);
-                });
-
-        }, []);
-
-        const filteredClubs =
-            search.length < 2
-                ? []
-                : clubs
-                      .filter((club) =>
-                          (
-                              club.name +
-                              ' ' +
-                              club.vkz
-                          )
-                              .toLowerCase()
-                              .includes(search.toLowerCase())
-                      )
-                      .slice(0, 25);
-
-        const selectedClub = clubs.find(
-            (club) => String(club.vkz) === String(vkz)
-        );
 
         return createElement(
             Fragment,
@@ -140,121 +75,58 @@ registerBlockType('dwz-verein-list/dwz-list', {
                 ),
 
                 createElement(
+                    'p',
+                    {
+                        style: {
+                            marginTop: 0,
+                            marginBottom: '20px',
+                            color: '#000000'
+                        }
+                    },
+                    'Die VKZ (Vereinskennziffer) und der API-Token (Zugangsschlüssel) sind erforderlich, um die DWZ-Liste des Vereins anzuzeigen. Der API-Token kann hier sehr einfach generiert werden: ',
+                    createElement(
+                        'a',
+                        {
+                            href: 'https://www.schachbund.de/wertungsportal-api.html',
+                            target: '_blank',
+                            rel: 'noopener noreferrer'
+                        },
+                        'https://www.schachbund.de/wertungsportal-api.html'
+                    )
+                ),
+                createElement(
                     TextControl,
                     {
-                        label: 'Verein suchen',
-                        value: search,
-                        onChange: setSearch,
-                        placeholder: 'Vereinsname oder VKZ eingeben...'
+                        label: 'VKZ (Vereinskennziffer)',
+                        value: vkz || '',
+                        onChange: function (value) {
+                            setAttributes({
+                                vkz: value
+                            });
+                        },
+                        placeholder: 'VKZ eingeben',
+                        style: {
+                            marginBottom: '5px'
+                        }
                     }
                 ),
 
-                loading &&
-                    createElement(
-                        'div',
-                        {
-                            style: {
-                                marginBottom: '15px'
-                            }
+                createElement(
+                    TextControl,
+                    {
+                        label: 'API-Token (Zugangsschlüssel)',
+                        value: apiToken || '',
+                        onChange: function (value) {
+                            setAttributes({
+                                apiToken: value
+                            });
                         },
-                        createElement(Spinner)
-                    ),
-
-                error &&
-                    createElement(
-                        'p',
-                        {
-                            style: {
-                                color: 'red',
-                                fontWeight: 'bold'
-                            }
-                        },
-                        'Fehler beim Laden der Vereinsliste.'
-                    ),
-
-                !loading &&
-                filteredClubs.length > 0 &&
-                    createElement(
-                        'div',
-                        {
-                            style: {
-                                maxHeight: '300px',
-                                overflowY: 'auto',
-                                backgroundColor: '#fff',
-                                border: '1px solid #ddd',
-                                borderRadius: '4px',
-                                marginBottom: '15px'
-                            }
-                        },
-
-                        filteredClubs.map((club) =>
-                            createElement(
-                                'div',
-                                {
-                                    key: club.vkz,
-
-                                    onClick: function () {
-
-                                        setSearch(
-                                            club.name +
-                                            ' (' +
-                                            club.vkz +
-                                            ')'
-                                        );
-
-                                        setAttributes({
-                                            vkz: club.vkz
-                                        });
-                                    },
-
-                                    style: {
-                                        padding: '10px',
-                                        cursor: 'pointer',
-                                        borderBottom:
-                                            '1px solid #eee'
-                                    }
-                                },
-
-                                club.name +
-                                ' (' +
-                                club.vkz +
-                                ')'
-                            )
-                        )
-                    ),
-
-                selectedClub &&
-                    createElement(
-                        'div',
-                        {
-                            style: {
-                                marginBottom: '20px',
-                                padding: '12px',
-                                backgroundColor: '#e7f5ff',
-                                border: '1px solid #74c0fc',
-                                borderRadius: '4px'
-                            }
-                        },
-
-                        createElement(
-                            'strong',
-                            null,
-                            'Ausgewählter Verein'
-                        ),
-
-                        createElement(
-                            'div',
-                            null,
-                            selectedClub.name
-                        ),
-
-                        createElement(
-                            'div',
-                            null,
-                            'VKZ: ',
-                            selectedClub.vkz
-                        )
-                    ),
+                        placeholder: 'API-Token eingeben',
+                        style: {
+                            marginBottom: '20px'
+                        }
+                    }
+                ),
 
                 createElement(
                     CheckboxControl,
@@ -290,7 +162,7 @@ registerBlockType('dwz-verein-list/dwz-list', {
                     CheckboxControl,
                     {
                         label:
-                            'Elo anzeigen (Dazu müssen in den Plugin-Einstellungen die FIDE-Daten importiert werden)',
+                            'Standard-Elo anzeigen',
                         checked: showElo,
                         onChange: function (value) {
                             setAttributes({
@@ -300,7 +172,7 @@ registerBlockType('dwz-verein-list/dwz-list', {
                     }
                 ),
 
-                showElo &&
+                
                     createElement(
                         CheckboxControl,
                         {
@@ -314,7 +186,7 @@ registerBlockType('dwz-verein-list/dwz-list', {
                         }
                     ),
 
-                showElo &&
+                
                     createElement(
                         CheckboxControl,
                         {
@@ -328,7 +200,7 @@ registerBlockType('dwz-verein-list/dwz-list', {
                         }
                     ),
 
-                showElo &&
+                
                     createElement(
                         CheckboxControl,
                         {
@@ -342,7 +214,7 @@ registerBlockType('dwz-verein-list/dwz-list', {
                         }
                     ),
                 
-                showElo &&
+                
                     createElement(
                         CheckboxControl,
                         {

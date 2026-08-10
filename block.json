@@ -21,6 +21,10 @@
 			"type": "string",
 			"default": ""
 		},
+		"apiToken": {
+			"type": "string",
+			"default": ""
+		},
 		"showElo": {
 			"type": "boolean",
 			"default": true

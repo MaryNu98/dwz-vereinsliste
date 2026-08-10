@@ -10,19 +10,26 @@ class DWZ_API {
     /**
      * API Base URL
      */
-    const API_BASE_URL = 'https://schachde-apps.liga.nu/dsbwertungsportal/rs/dwz/dwzliste/persons';
+    const API_BASE_URL = 'https://www.schachbund.de/wertungsportal-api/vereinsliste';
     
     /**
      * Cache-Dauer in Sekunden (24 Stunden = 86400 Sekunden)
      */
     const CACHE_DURATION = 86400;
     
-public static function get_verein_list($vkz) {
+public static function get_verein_list($vkz, $apiToken) {
 
     if (empty($vkz)) {
         return new WP_Error(
             'invalid_vkz',
             __('VKZ-Nummer ist erforderlich', 'dwz-verein-list')
+        );
+    }
+
+    if (empty($apiToken)) {
+        return new WP_Error(
+            'invalid_api_token',
+            __('API-Token ist erforderlich', 'dwz-verein-list')
         );
     }
 
@@ -35,7 +42,8 @@ public static function get_verein_list($vkz) {
 
     $url = add_query_arg(
         array(
-            'vkz' => sanitize_text_field($vkz)
+            'vkz' => sanitize_text_field($vkz),
+            'token' => sanitize_text_field($apiToken)
         ),
         self::API_BASE_URL
     );
@@ -43,7 +51,7 @@ public static function get_verein_list($vkz) {
     $response = wp_remote_get(
         $url,
         array(
-            'timeout'   => 15,
+            'timeout'   => 10,
             'sslverify' => true,
             'user-agent'=> 'WordPress/DWZ-Verein-List'
         )
@@ -71,7 +79,7 @@ public static function get_verein_list($vkz) {
 
     $body = wp_remote_retrieve_body($response);
 
-    $json = json_decode($body, true);
+    $data = json_decode($body, true);
 
     if (json_last_error() !== JSON_ERROR_NONE) {
         return new WP_Error(
@@ -81,32 +89,14 @@ public static function get_verein_list($vkz) {
     }
 
     if (
-        !isset($json['data']) ||
-        !is_array($json['data'])
+        !isset($data['spieler']) ||
+        !is_array($data['spieler'])
     ) {
         return new WP_Error(
             'parse_error',
             __('Keine Spielerdaten gefunden', 'dwz-verein-list')
         );
     }
-
-    $data = $json['data'];
-
-    usort($data, function ($a, $b) {
-
-        $rating_a = isset($a['rating']) ? (int)$a['rating'] : 0;
-        $rating_b = isset($b['rating']) ? (int)$b['rating'] : 0;
-
-        if ($rating_a === $rating_b) {
-
-            $index_a = isset($a['index']) ? (int)$a['index'] : 0;
-            $index_b = isset($b['index']) ? (int)$b['index'] : 0;
-
-            return $index_b <=> $index_a;
-        }
-
-        return $rating_b <=> $rating_a;
-    });
 
     set_transient(
         $cache_key,
@@ -116,11 +106,9 @@ public static function get_verein_list($vkz) {
 
     return $data;
 }
-
     
     /**
      * Cache leeren
-     *
      * @param string $vkz Optional: VKZ-Nummer zum gezielten Löschen
      */
     public static function clear_cache($vkz = null) {
