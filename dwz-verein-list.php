@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: DWZ Vereinsliste
+ * Plugin Name: DWZ-Vereinsliste
  * Plugin URI: https://github.com/MaryNu98
  * Description: Zeigt die DWZ-Liste eines Schachvereins via Widget. Die Daten werden von der API des Deutschen Schachbundes abgerufen.
  * Version: 1.0.0

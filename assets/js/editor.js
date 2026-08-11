@@ -31,6 +31,11 @@ registerBlockType('dwz-verein-list/dwz-list', {
             apiToken,
             showStatus,
             showNation,
+            linkNationToFide,
+            linkEloToFide,
+            linkRapidToFide,
+            linkBlitzToFide,
+            showLastUpdate,
             showTitle,
             showElo,
             showRapid,
@@ -162,6 +167,21 @@ registerBlockType('dwz-verein-list/dwz-list', {
                     CheckboxControl,
                     {
                         label:
+                            'Woche der letzten DWZ-Auswertung anzeigen',
+                        checked: showLastUpdate,
+
+                        onChange: function (value) {
+                            setAttributes({
+                                showLastUpdate: value
+                            });
+                        }
+                    }
+                ),
+
+                createElement(
+                    CheckboxControl,
+                    {
+                        label:
                             'Standard-Elo anzeigen',
                         checked: showElo,
                         onChange: function (value) {
@@ -172,46 +192,139 @@ registerBlockType('dwz-verein-list/dwz-list', {
                     }
                 ),
 
-                
+                showElo &&
                     createElement(
-                        CheckboxControl,
+                        'div',
                         {
-                            label: 'Rapid-Elo anzeigen',
-                            checked: showRapid,
-                            onChange: function (value) {
-                                setAttributes({
-                                    showRapid: value
-                                });
+                            style: {
+                                marginLeft: '24px',
+                                marginTop: '4px',
+                                marginBottom: '8px'
                             }
-                        }
+                        },
+                        createElement(
+                            CheckboxControl,
+                            {
+                                label: 'Link zum FIDE-Profil setzen',
+                                checked: !!linkEloToFide,
+                                onChange: function (value) {
+                                    setAttributes({
+                                        linkEloToFide: value
+                                    });
+                                }
+                            }
+                        )
                     ),
 
-                
-                    createElement(
-                        CheckboxControl,
-                        {
-                            label: 'Blitz-Elo anzeigen',
-                            checked: showBlitz,
-                            onChange: function (value) {
-                                setAttributes({
-                                    showBlitz: value
-                                });
-                            }
+                createElement(
+                    CheckboxControl,
+                    {
+                        label: 'Rapid-Elo anzeigen',
+                        checked: showRapid,
+                        onChange: function (value) {
+                            setAttributes({
+                                showRapid: value
+                            });
                         }
+                    }
+                ),
+
+                showRapid &&
+                    createElement(
+                        'div',
+                        {
+                            style: {
+                                marginLeft: '24px',
+                                marginTop: '4px',
+                                marginBottom: '8px'
+                            }
+                        },
+                        createElement(
+                            CheckboxControl,
+                            {
+                                label: 'Link zum FIDE-Profil setzen',
+                                checked: !!linkRapidToFide,
+                                onChange: function (value) {
+                                    setAttributes({
+                                        linkRapidToFide: value
+                                    });
+                                }
+                            }
+                        )
                     ),
 
-                
-                    createElement(
-                        CheckboxControl,
-                        {
-                            label: 'FIDE-Nation anzeigen (mit Link zum FIDE-Profil)',
-                            checked: showNation,
-                            onChange: function (value) {
-                                setAttributes({
-                                    showNation: value
-                                });
-                            }
+                createElement(
+                    CheckboxControl,
+                    {
+                        label: 'Blitz-Elo anzeigen',
+                        checked: showBlitz,
+                        onChange: function (value) {
+                            setAttributes({
+                                showBlitz: value
+                            });
                         }
+                    }
+                ),
+
+                showBlitz &&
+                    createElement(
+                        'div',
+                        {
+                            style: {
+                                marginLeft: '24px',
+                                marginTop: '4px',
+                                marginBottom: '8px'
+                            }
+                        },
+                        createElement(
+                            CheckboxControl,
+                            {
+                                label: 'Link zum FIDE-Profil setzen',
+                                checked: !!linkBlitzToFide,
+                                onChange: function (value) {
+                                    setAttributes({
+                                        linkBlitzToFide: value
+                                    });
+                                }
+                            }
+                        )
+                    ),
+
+                createElement(
+                    CheckboxControl,
+                    {
+                        label: 'FIDE-Nation anzeigen',
+                        checked: showNation,
+                        onChange: function (value) {
+                            setAttributes({
+                                showNation: value
+                            });
+                        }
+                    }
+                ),
+
+                showNation &&
+                    createElement(
+                        'div',
+                        {
+                            style: {
+                                marginLeft: '24px',
+                                marginTop: '4px',
+                                marginBottom: '8px'
+                            }
+                        },
+                        createElement(
+                            CheckboxControl,
+                            {
+                                label: 'Link zum FIDE-Profil setzen',
+                                checked: !!linkNationToFide,
+                                onChange: function (value) {
+                                    setAttributes({
+                                        linkNationToFide: value
+                                    });
+                                }
+                            }
+                        )
                     ),
                 
                 

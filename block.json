@@ -45,6 +45,26 @@
 			"type": "boolean",
 			"default": true
 		},
+		"linkNationToFide": {
+			"type": "boolean",
+			"default": false
+		},
+		"linkEloToFide": {
+			"type": "boolean",
+			"default": false
+		},
+		"linkRapidToFide": {
+			"type": "boolean",
+			"default": false
+		},
+		"linkBlitzToFide": {
+			"type": "boolean",
+			"default": false
+		},
+		"showLastUpdate": {
+			"type": "boolean",
+			"default": false
+		},
 		"showTitle": {
 			"type": "boolean",
 			"default": true

@@ -1,0 +1,1 @@
+/* Frontend script placeholder for DWZ Verein List */
