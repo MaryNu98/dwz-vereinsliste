@@ -53,7 +53,7 @@ public static function get_verein_list($vkz, $apiToken) {
         array(
             'timeout'   => 10,
             'sslverify' => true,
-            'user-agent'=> 'WordPress/DWZ-Verein-List'
+            'user-agent'=> 'WordPress-DWZ-Vereinsliste/1.0 (VKZ: ' . sanitize_text_field($vkz) . ')'
         )
     );
 

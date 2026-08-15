@@ -1,6 +1,6 @@
 === DWZ-Vereinsliste ===
-Contributors: Marius Nürenberg
-Tags: schach, dwz, schachbund, verein, block
+Contributors: nuerenberg
+Tags: chess, dwz, german-chess, club, block
 Requires at least: 5.0
 Tested up to: 7.0
 Stable tag: 1.0.0
@@ -8,97 +8,51 @@ Requires PHP: 7.4
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Zeigt die DWZ-Liste eines Schachvereins direkt im WordPress-Block oder Widget an. Alle Daten werden jetzt über die API des Deutschen Schachbundes geladen. Für den Zugriff wird ein API-Token benötigt, den man unter https://www.schachbund.de/wertungsportal-api.html generieren kann.
+Displays a club's DWZ (German rating) list as a widget. Data is fetched from the German Chess Federation API and requires an API token.
 
 == Description ==
 
-Das Plugin "DWZ-Vereinsliste" ist speziell für Schachvereine entwickelt und bietet die Möglichkeit, die aktuelle DWZ-Liste (Deutsche Wertungszahl) eines Vereins direkt auf der Website anzuzeigen.
+DWZ Club List fetches and displays the current DWZ list for a club using the DSB API.
 
-**Features:**
+Features:
 
-* Anzeige der aktuellen DWZ-Liste eines Vereins
-* Alle Daten werden direkt aus der API des Deutschen Schachbundes geladen
-* Kein zusätzlicher FIDE-Import mehr erforderlich
-* API-Token für den Zugriff auf die DSB-API erforderlich
-* 24-Stunden-Caching zur Entlastung der API
-* Responsive Design - funktioniert auf allen Geräten
-* Nach DWZ sortierte Spielerliste
-
-**Wie es funktioniert:**
-
-1. Der Block oder das Widget wird auf der Seite eingebunden
-2. Die VKZ des Vereins und ein API-Token werden eingegeben
-3. Das Plugin lädt die Daten über die API des Deutschen Schachbundes
-4. Die Spielerliste wird nach DWZ-Rang sortiert und angezeigt
-5. Die Daten werden 24 Stunden gecacht, um die API nicht zu überlasten
-
-**Anforderungen:**
-
-* WordPress 5.0 oder höher
-* PHP 7.4 oder höher
-* Internetverbindung zum Abrufen der Daten (mit 24h Cache)
-* API-Token des Deutschen Schachbundes
-
-**Verwendung:**
-
-1. Das Plugin installieren und aktivieren
-2. Den Block oder das Widget "DWZ-Vereinsliste" auf einer Seite einfügen
-3. Die VKZ des Vereins eingeben
-4. Den API-Token eintragen
-5. Optional die anzuzeigenden Spalten konfigurieren
+* Fetches member ratings from the DSB API (requires API token)
+* 24-hour caching to reduce API load
+* Configurable columns (DWZ, Elo, Rapid, Blitz, nation, status)
+* Sorts players by DWZ
+* Responsive table design
 
 == Installation ==
 
-1. Das Plugin-Verzeichnis hochladen oder via WordPress-Plugin-Suche installieren
-2. Das Plugin in WordPress aktivieren
-3. Den Block oder das Widget "DWZ-Vereinsliste" dort einfügen, wo die DWZ-Liste angezeigt werden soll
-4. Die VKZ des Vereins eingeben
-5. Den API-Token eintragen
-6. Optional die anzuzeigenden Spalten konfigurieren
+1. Upload the plugin folder to the `/wp-content/plugins/` directory
+2. Activate the plugin through the 'Plugins' screen in WordPress
+3. Insert the 'DWZ-Liste' block on a page and configure VKZ and API token
 
 == Frequently Asked Questions ==
 
-= Was ist die VKZ-Nummer meines Vereins? =
+= How do I get an API token? =
 
-Die VKZ-Nummer (Vereinskennzahl) ist die eindeutige Nummer des Schachvereins im Deutschen Schachbund. Man findet die VKZ auf der Website des DSB über die Vereinssuche.
+Generate an API token on the German Chess Federation's website: https://www.schachbund.de/wertungsportal-api.html
 
-= Wie bekomme ich einen API-Token (Zugangsschlüssel)? =
+= Can I use multiple blocks with different clubs? =
 
-Den API-Token (Zugangsschlüssel) muss man auf der Seite des Deutschen Schachbundes generieren: https://www.schachbund.de/wertungsportal-api.html
-
-= Wie lange werden die Daten gecacht? =
-
-Alle Daten werden 24 Stunden gecacht, um die API des Deutschen Schachbundes nicht zu überlasten.
-
-= Welche Daten werden angezeigt? =
-
-Das Plugin zeigt Name, DWZ (Deutsche Wertungszahl), DWZ-Index und die Platzierung des Spielers an. Optional können weitere Informationen wie Status und Elo-Daten angezeigt werden. 
-
-= Kann ich mehrere Blöcke oder Widgets mit unterschiedlichen Vereinen verwenden? =
-
-Ja, Sie können mehrere Blöcke oder Widgets mit unterschiedlichen Vereinslisten auf der gleichen Homepage hinzufügen.
-
-= Was ist die API des Deutschen Schachbundes? =
-
-Die API ist eine technische Schnittstelle, die es erlaubt, DWZ-Daten vom Deutschen Schachbund abzurufen. 
-
+Yes — each block instance can be configured with a different VKZ and token.
 
 == Screenshots ==
 
-1. Die DWZ-Liste im Frontend
-2. Die Block- oder Widget-Konfiguration im Backend
+1. Club list in the frontend
+2. Block configuration UI in the editor
 
 == Changelog ==
 
 = 1.0.0 =
-* Initiale Veröffentlichung
-* Block bzw. Widget zum Anzeigen der DWZ-Liste
-* Caching implementiert
-* Responsive Design
+* Initial release
+* Block to display club DWZ lists
+* Caching implemented
 
 == Support ==
 
-Bei Fragen oder Problemen kontaktieren Sie Marius Nürenberg.
+For support contact the plugin author.
 
 == License ==
 

@@ -202,13 +202,18 @@ class DWZ_Block {
             
             // Titel-Spalte
             if($show_title){
-                $html .= '<td class="dwz-col-title" style="text-align: center;" title="' . esc_attr__('Titel: ' . $title, 'dwz-verein-list') . '">' . esc_html($title) . '</td>';
+                /* translators: %s: FIDE title abbreviation, e.g. 'GM', 'IM', 'FM' */
+                $title_attr = sprintf(esc_html__('Titel: %s', 'dwz-verein-list'), $title);
+                $html .= '<td class="dwz-col-title" style="text-align: center;" title="' . esc_attr($title_attr) . '">' . esc_html($title) . '</td>';
             }
 
             // Status-Spalte
             if($show_status){
                 $status = $status === 'P' ? 'P' : ''; // Nur "P" für Passiv anzeigen, sonst leer
-                $html .= '<td class="dwz-col-status" style="text-align: center;" title="' . esc_attr__('Status: ' . ($status === 'P' ? 'Passiv' : 'Aktiv'), 'dwz-verein-list') . '">' . esc_html($status) . '</td>';
+                $status_label = $status === 'P' ? esc_html__('Passiv', 'dwz-verein-list') : esc_html__('Aktiv', 'dwz-verein-list');
+                /* translators: %s: status label, either 'Passiv' or 'Aktiv' */
+                $status_title = sprintf(esc_html__('Status: %s', 'dwz-verein-list'), $status_label);
+                $html .= '<td class="dwz-col-status" style="text-align: center;" title="' . esc_attr($status_title) . '">' . esc_html($status) . '</td>';
             }
 
             // Nationalität-Spalte
@@ -218,6 +223,9 @@ class DWZ_Block {
                 } else {
                     $flag_markup = self::get_country_flag_markup($federation);
                     $nation_markup = '';
+                    $country_name = self::get_country_name_from_code($federation);
+                    /* translators: %s: full country name, e.g. 'Deutschland' */
+                    $nation_title_attr = sprintf(esc_html__('Nationalität: %s', 'dwz-verein-list'), $country_name);
 
                     if ($link_nation_to_fide && !empty($fide_profile_url)) {
                         $nation_markup = '<a href="' . esc_url($fide_profile_url) . '" target="_blank" rel="noopener noreferrer" style="color:inherit;">' . esc_html($federation) . '</a>';
@@ -225,7 +233,7 @@ class DWZ_Block {
                         $nation_markup = esc_html($federation);
                     }
 
-                    $html .= '<td class="dwz-col-nation" style="text-align:center; width:72px; min-width:72px; white-space:nowrap; overflow:hidden;" title="' . esc_attr__('Nationalität: ' . self::get_country_name_from_code($federation), 'dwz-verein-list') . '">
+                    $html .= '<td class="dwz-col-nation" style="text-align:center; width:72px; min-width:72px; white-space:nowrap; overflow:hidden;" title="' . esc_attr($nation_title_attr) . '">
                         <span style="display:inline-flex; align-items:center; justify-content:center; gap:6px; white-space:nowrap;">
                             ' . $flag_markup . '
                             <span>' . $nation_markup . '</span>
@@ -249,11 +257,7 @@ class DWZ_Block {
                     $html .= '<td class="dwz-col-dwz" style="text-align: center;"title="' . esc_attr__('DWZ', 'dwz-verein-list') . '">' . intval($dwz) . '</td>';
                 }
             }else{
-                if ($lastDwzUpdate !== '') {
-                    $html .= '<td class="dwz-col-dwz" style="text-align: right;" title="' . esc_attr__('Es gibt DWZ-gewertete Restpartien', 'dwz-verein-list') . '">Rest</td>';
-                } else{
-                    $html .= '<td class="dwz-col-dwz"></td>';
-                }
+                $html .= '<td class="dwz-col-dwz"></td>';
                 if($showIndex){
                     $html .= '<td class="dwz-col-dwz"></td>';
                     $html .= '<td class="dwz-col-dwz"></td>';
@@ -309,13 +313,10 @@ class DWZ_Block {
         // Info-Text        
         $html .= '<p class="dwz-info">';
             $html .= sprintf(
+                /* translators: %s: date (localized), e.g. "11. August 2026, 00:37 Uhr" */
                 esc_html__('Daten vom Deutschen Schachbund (Stand: %s).', 'dwz-verein-list'),
                 $formatted_data_date
             );
-        
-        $html .= '<br>';
-        $html .= esc_html__('Erstellt mit dem Wordpress-Plugin "DWZ-Vereinsliste" von Marius Nürenberg.', 'dwz-verein-list');
-        $html .= '</p>';
         
         $html .= '</div>';
         
@@ -326,13 +327,13 @@ class DWZ_Block {
         if (empty($date_string)) {
             return '';
         }
-
-        $timestamp = strtotime($date_string);
-        if ($timestamp === false) {
+        try {
+            $dt = new DateTimeImmutable($date_string);
+            $dt = $dt->setTimezone(new DateTimeZone('Europe/Berlin'));
+            return $dt->format('d. F Y, H:i \\U\\h\\r');
+        } catch (Exception $e) {
             return sanitize_text_field($date_string);
         }
-
-        return gmdate('d. F Y, H:i \U\h\r', $timestamp);
     }
 
     private static function format_week_string($week_string) {
@@ -391,14 +392,13 @@ class DWZ_Block {
             $dwzB = isset($b['dwz']) ? (int) $b['dwz'] : 0;
 
             if ($dwzA === $dwzB) {
-                $updateA = isset($a['letzteAuswertung']) ? sanitize_text_field($a['letzteAuswertung']) : '';
-                $updateB = isset($b['letzteAuswertung']) ? sanitize_text_field($b['letzteAuswertung']) : '';
-
-                if ($updateA === $updateB) {
+                    $indexA = isset($a['index']) ? (int) $a['index'] : 0;
+                    $indexB = isset($b['index']) ? (int) $b['index'] : 0;
+                if ($indexA === $indexB) {
                     return 0;
                 }
 
-                return ($updateA < $updateB) ? 1 : -1;
+                return ($indexA < $indexB) ? 1 : -1;
             }
 
             return ($dwzA < $dwzB) ? 1 : -1;
