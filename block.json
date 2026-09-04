@@ -7,7 +7,7 @@
 	"category": "widgets",
 	"icon": "list-view",
 	"description": "Zeigt die DWZ-Liste eines Schachvereins.",
-	"textdomain": "dwz-verein-list",
+	"textdomain": "dwz-vereinsliste",
 	"editorScript": "file:./assets/js/editor.js",
 	"editorStyle": "file:./assets/dwz-styles.css",
 	"style": "file:./assets/dwz-styles.css",

@@ -22,14 +22,14 @@ public static function get_verein_list($vkz, $apiToken) {
     if (empty($vkz)) {
         return new WP_Error(
             'invalid_vkz',
-            __('VKZ-Nummer ist erforderlich', 'dwz-verein-list')
+            __('VKZ-Nummer ist erforderlich', 'dwz-vereinsliste')
         );
     }
 
     if (empty($apiToken)) {
         return new WP_Error(
             'invalid_api_token',
-            __('API-Token ist erforderlich', 'dwz-verein-list')
+            __('API-Token ist erforderlich', 'dwz-vereinsliste')
         );
     }
 
@@ -71,7 +71,7 @@ public static function get_verein_list($vkz, $apiToken) {
             'invalid_response',
             sprintf(
                 /* translators: %d: HTTP status code */
-                __('API-Fehler: HTTP %d', 'dwz-verein-list'),
+                __('API-Fehler: HTTP %d', 'dwz-vereinsliste'),
                 $status_code
             )
         );
@@ -94,7 +94,7 @@ public static function get_verein_list($vkz, $apiToken) {
     ) {
             return new WP_Error(
             'parse_error',
-            __('Keine Spielerdaten gefunden', 'dwz-verein-list')
+            __('Keine Spielerdaten gefunden', 'dwz-vereinsliste')
         );
     }
 

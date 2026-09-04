@@ -45,13 +45,13 @@ class NuDwz_Block {
         // VKZ-Nummer prüfen
         if (empty($vkz)) {
             $output .= '<div class="dwz-block-error">' . 
-                       esc_html__('Kein Verein konfiguriert.', 'dwz-verein-list') . 
+                       esc_html__('Kein Verein konfiguriert.', 'dwz-vereinsliste') . 
                        '</div>';
         } else {
             // API-Token prüfen
             if (empty($apiToken)) {
                 $output .= '<div class="dwz-block-error">' .
-                           esc_html__('Kein API-Token konfiguriert.', 'dwz-verein-list') . 
+                           esc_html__('Kein API-Token konfiguriert.', 'dwz-vereinsliste') . 
                            '</div>';
             }
             // DWZ-Liste abrufen
@@ -59,7 +59,7 @@ class NuDwz_Block {
             
             if (is_wp_error($data)) {
                 $output .= '<div class="dwz-block-error">';
-                $output .= '<strong>' . esc_html__('Fehler beim Abrufen der DWZ-Liste:', 'dwz-verein-list') . '</strong><br>';
+                $output .= '<strong>' . esc_html__('Fehler beim Abrufen der DWZ-Liste:', 'dwz-vereinsliste') . '</strong><br>';
                 $output .= wp_kses_post($data->get_error_message());
                 $output .= '</div>';
             } else {
@@ -89,7 +89,7 @@ class NuDwz_Block {
      */
     private static function render_table($vkz, $data, $show_elo = true, $show_rapid = true, $show_blitz = true, $show_status = true, $show_nation = true, $show_last_update = false, $show_title = true, $showIndex = true, $link_nation_to_fide = false, $link_elo_to_fide = false, $link_rapid_to_fide = false, $link_blitz_to_fide = false) {
         if (!is_array($data) || empty($data)) {
-            return '<p class="dwz-no-data">' . esc_html__('Keine Daten verfügbar', 'dwz-verein-list') . '</p>';
+            return '<p class="dwz-no-data">' . esc_html__('Keine Daten verfügbar', 'dwz-vereinsliste') . '</p>';
         }
 
         $data_date = isset($data['stand']) ? sanitize_text_field($data['stand']) : '';
@@ -103,45 +103,45 @@ class NuDwz_Block {
         $html .= '<table class="dwz-table">';
         $html .= '<thead>';
         $html .= '<tr>';
-        $html .= '<th class="dwz-col-platz">' . esc_html__('Nr.', 'dwz-verein-list') . '</th>';
-        $html .= '<th class="dwz-col-name">' . esc_html__('Name', 'dwz-verein-list') . '</th>';
+        $html .= '<th class="dwz-col-platz">' . esc_html__('Nr.', 'dwz-vereinsliste') . '</th>';
+        $html .= '<th class="dwz-col-name">' . esc_html__('Name', 'dwz-vereinsliste') . '</th>';
          
          // Titel-Spalte
         if($show_title){
-            $html .= '<th class="dwz-col-title" style="text-align: center;" title="' . esc_attr__('FIDE-Titel', 'dwz-verein-list') . '">' . esc_html__('T', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-title" style="text-align: center;" title="' . esc_attr__('FIDE-Titel', 'dwz-vereinsliste') . '">' . esc_html__('T', 'dwz-vereinsliste') . '</th>';
         }
         // Status-Spalte
         if($show_status){
-            $html .= '<th class="dwz-col-status" style="text-align: center;" title="' . esc_attr__('Status: P = Passiv', 'dwz-verein-list') . '">' . esc_html__('S', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-status" style="text-align: center;" title="' . esc_attr__('Status: P = Passiv', 'dwz-vereinsliste') . '">' . esc_html__('S', 'dwz-vereinsliste') . '</th>';
         }
         // Nationalität-Spalte
         if($show_nation){
-            $html .= '<th class="dwz-col-nation" style="text-align: center;" title="' . esc_attr__('Nationalität', 'dwz-verein-list') . '">' . esc_html__('Land', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-nation" style="text-align: center;" title="' . esc_attr__('Nationalität', 'dwz-vereinsliste') . '">' . esc_html__('Land', 'dwz-vereinsliste') . '</th>';
         }
 
         if ($show_last_update) {
-            $html .= '<th class="dwz-col-update" style="text-align: center;" title="' . esc_attr__('Woche der letzten DWZ-Auswertung', 'dwz-verein-list') . '">' . esc_html__('Auswertung', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-update" style="text-align: center;" title="' . esc_attr__('Woche der letzten DWZ-Auswertung', 'dwz-vereinsliste') . '">' . esc_html__('Auswertung', 'dwz-vereinsliste') . '</th>';
         }
        
         if($showIndex){
-            $html .= '<th class="dwz-col-dwz" style="text-align: right;">' . esc_html__('DWZ', 'dwz-verein-list') . '</th>';
-            $html .= '<th class="dwz-col-dwz" style="text-align: center; width: 20px;">' . esc_html__('-', 'dwz-verein-list') . '</th>';
-            $html .= '<th class="dwz-col-dwz" style="text-align: left;">' . esc_html__('Index', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-dwz" style="text-align: right;">' . esc_html__('DWZ', 'dwz-vereinsliste') . '</th>';
+            $html .= '<th class="dwz-col-dwz" style="text-align: center; width: 20px;">' . esc_html__('-', 'dwz-vereinsliste') . '</th>';
+            $html .= '<th class="dwz-col-dwz" style="text-align: left;">' . esc_html__('Index', 'dwz-vereinsliste') . '</th>';
         }else{
-            $html .= '<th class="dwz-col-dwz" style="text-align: center;">' . esc_html__('DWZ', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-dwz" style="text-align: center;">' . esc_html__('DWZ', 'dwz-vereinsliste') . '</th>';
         }
 
 
         if ($show_elo) {
-            $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Elo', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Elo', 'dwz-vereinsliste') . '</th>';
         }
         
         if ($show_rapid) {
-            $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Rapid', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Rapid', 'dwz-vereinsliste') . '</th>';
         }
         
         if ($show_blitz) {
-            $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Blitz', 'dwz-verein-list') . '</th>';
+            $html .= '<th class="dwz-col-elo" style="text-align: center;">' . esc_html__('Blitz', 'dwz-vereinsliste') . '</th>';
         }
         
         $html .= '</tr>';
@@ -203,16 +203,16 @@ class NuDwz_Block {
             // Titel-Spalte
             if($show_title){
                 /* translators: %s: FIDE title abbreviation, e.g. 'GM', 'IM', 'FM' */
-                $title_attr = sprintf(esc_html__('Titel: %s', 'dwz-verein-list'), $title);
+                $title_attr = sprintf(esc_html__('Titel: %s', 'dwz-vereinsliste'), $title);
                 $html .= '<td class="dwz-col-title" style="text-align: center;" title="' . esc_attr($title_attr) . '">' . esc_html($title) . '</td>';
             }
 
             // Status-Spalte
             if($show_status){
                 $status = $status === 'P' ? 'P' : ''; // Nur "P" für Passiv anzeigen, sonst leer
-                $status_label = $status === 'P' ? esc_html__('Passiv', 'dwz-verein-list') : esc_html__('Aktiv', 'dwz-verein-list');
+                $status_label = $status === 'P' ? esc_html__('Passiv', 'dwz-vereinsliste') : esc_html__('Aktiv', 'dwz-vereinsliste');
                 /* translators: %s: status label, either 'Passiv' or 'Aktiv' */
-                $status_title = sprintf(esc_html__('Status: %s', 'dwz-verein-list'), $status_label);
+                $status_title = sprintf(esc_html__('Status: %s', 'dwz-vereinsliste'), $status_label);
                 $html .= '<td class="dwz-col-status" style="text-align: center;" title="' . esc_attr($status_title) . '">' . esc_html($status) . '</td>';
             }
 
@@ -225,7 +225,7 @@ class NuDwz_Block {
                     $nation_markup = '';
                     $country_name = self::get_country_name_from_code($federation);
                     /* translators: %s: full country name, e.g. 'Deutschland' */
-                    $nation_title_attr = sprintf(esc_html__('Nationalität: %s', 'dwz-verein-list'), $country_name);
+                    $nation_title_attr = sprintf(esc_html__('Nationalität: %s', 'dwz-vereinsliste'), $country_name);
 
                     if ($link_nation_to_fide && !empty($fide_profile_url)) {
                         $nation_markup = '<a href="' . esc_url($fide_profile_url) . '" target="_blank" rel="noopener noreferrer" style="color:inherit;">' . esc_html($federation) . '</a>';
@@ -244,17 +244,17 @@ class NuDwz_Block {
 
             // Spalte für letzte DWZ-Auswertung
             if ($show_last_update) {
-                $html .= '<td class="dwz-col-update" style="text-align: center;" title="' . esc_attr__('Woche der letzten DWZ-Auswertung', 'dwz-verein-list') . '">' . esc_html($lastDwzUpdate) . '</td>';
+                $html .= '<td class="dwz-col-update" style="text-align: center;" title="' . esc_attr__('Woche der letzten DWZ-Auswertung', 'dwz-vereinsliste') . '">' . esc_html($lastDwzUpdate) . '</td>';
             }
             
             // DWZ und Index in drei Spalten
             if ($dwz!=0){
                 if($showIndex){
-                    $html .= '<td class="dwz-col-dwz" style="text-align: right;"title="' . esc_attr__('DWZ', 'dwz-verein-list') . '">' . intval($dwz) . '</td>';
+                    $html .= '<td class="dwz-col-dwz" style="text-align: right;"title="' . esc_attr__('DWZ', 'dwz-vereinsliste') . '">' . intval($dwz) . '</td>';
                     $html .= '<td class="dwz-col-dwz" style="text-align: center; width: 20px;">-</td>';
-                    $html .= '<td class="dwz-col-dwz" style="text-align: left;"title="' . esc_attr__('Anzahl der DWZ-Auswertungen (Index)', 'dwz-verein-list') . '">' . intval($dwzindex) . '</td>';
+                    $html .= '<td class="dwz-col-dwz" style="text-align: left;"title="' . esc_attr__('Anzahl der DWZ-Auswertungen (Index)', 'dwz-vereinsliste') . '">' . intval($dwzindex) . '</td>';
                 }else{
-                    $html .= '<td class="dwz-col-dwz" style="text-align: center;"title="' . esc_attr__('DWZ', 'dwz-verein-list') . '">' . intval($dwz) . '</td>';
+                    $html .= '<td class="dwz-col-dwz" style="text-align: center;"title="' . esc_attr__('DWZ', 'dwz-vereinsliste') . '">' . intval($dwz) . '</td>';
                 }
             }else{
                 $html .= '<td class="dwz-col-dwz"></td>';
@@ -269,36 +269,36 @@ class NuDwz_Block {
                 if ($standard_elo) {
                     $elo_value = intval($standard_elo);
                     if ($link_elo_to_fide && !empty($fide_profile_url)) {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Standard-Elo', 'dwz-verein-list') . '"><a href="' . esc_url($fide_profile_url) . '" target="_blank" rel="noopener noreferrer" style="color:inherit;">' . intval($elo_value) . '</a></td>';
+                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Standard-Elo', 'dwz-vereinsliste') . '"><a href="' . esc_url($fide_profile_url) . '" target="_blank" rel="noopener noreferrer" style="color:inherit;">' . intval($elo_value) . '</a></td>';
                     } else {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Standard-Elo', 'dwz-verein-list') . '">' . intval($elo_value) . '</td>';
+                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Standard-Elo', 'dwz-vereinsliste') . '">' . intval($elo_value) . '</td>';
                     }
                 } else {
-                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Standard-Elo', 'dwz-verein-list') . '"></td>';
+                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Standard-Elo', 'dwz-vereinsliste') . '"></td>';
                 }
             }
             if ($show_rapid) {
                 if ($rapid_elo) {
                     $elo_value = intval($rapid_elo);
                     if ($link_rapid_to_fide && !empty($fide_profile_url)) {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-verein-list') . '"><a href="' . esc_url($fide_profile_url) . '" target="_blank" rel="noopener noreferrer" style="color:inherit;">' . intval($elo_value) . '</a></td>';
+                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-vereinsliste') . '"><a href="' . esc_url($fide_profile_url) . '" target="_blank" rel="noopener noreferrer" style="color:inherit;">' . intval($elo_value) . '</a></td>';
                     } else {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-verein-list') . '">' . intval($elo_value) . '</td>';
+                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-vereinsliste') . '">' . intval($elo_value) . '</td>';
                     }
                 } else {
-                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-verein-list') . '"></td>';
+                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Rapid-Elo', 'dwz-vereinsliste') . '"></td>';
                 }
             }
             if ($show_blitz) {
                 if ($blitz_elo) {
                     $elo_value = intval($blitz_elo);
                     if ($link_blitz_to_fide && !empty($fide_profile_url)) {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-verein-list') . '"><a href="' . esc_url($fide_profile_url) . '" target="_blank" rel="noopener noreferrer" style="color:inherit;">' . intval($elo_value) . '</a></td>';
+                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-vereinsliste') . '"><a href="' . esc_url($fide_profile_url) . '" target="_blank" rel="noopener noreferrer" style="color:inherit;">' . intval($elo_value) . '</a></td>';
                     } else {
-                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-verein-list') . '">' . intval($elo_value) . '</td>';
+                        $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-vereinsliste') . '">' . intval($elo_value) . '</td>';
                     }
                 } else {
-                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-verein-list') . '"></td>';
+                    $html .= '<td class="dwz-col-elo" style="text-align: center;"title="' . esc_attr__('Blitz-Elo', 'dwz-vereinsliste') . '"></td>';
                 }
             }
             
@@ -314,7 +314,7 @@ class NuDwz_Block {
         $html .= '<p class="dwz-info">';
             $html .= sprintf(
                 /* translators: %s: date (localized), e.g. "11. August 2026, 00:37 Uhr" */
-                esc_html__('Daten vom Deutschen Schachbund (Stand: %s).', 'dwz-verein-list'),
+                esc_html__('Daten vom Deutschen Schachbund (Stand: %s).', 'dwz-vereinsliste'),
                 esc_html($formatted_data_date)
             );
         

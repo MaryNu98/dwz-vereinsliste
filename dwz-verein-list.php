@@ -8,7 +8,7 @@
  * Author URI: https://github.com/MaryNu98
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: dwz-verein-list
+ * Text Domain: dwz-vereinsliste
  * Domain Path: /languages
  */
 
@@ -66,20 +66,6 @@ function nu_dwz_verein_list_enqueue_scripts() {
         true
     );
 
-    wp_localize_script(
-        'dwz-verein-list-frontend',
-        'dwzVereinList',
-        array(
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce' => wp_create_nonce('dwz_verein_list_player_details'),
-            'labels' => array(
-                'loading' => __('Spielerdaten werden geladen...', 'dwz-verein-list'),
-                'error' => __('Die Spielerdaten konnten nicht geladen werden.', 'dwz-verein-list'),
-                'eloDevelopment' => __('Elo-Entwicklung', 'dwz-verein-list'),
-                'noHistory' => __('Keine Elo-Historie verfügbar.', 'dwz-verein-list'),
-            ),
-        )
-    );
 }
 add_action('wp_enqueue_scripts', 'nu_dwz_verein_list_enqueue_scripts');
 
