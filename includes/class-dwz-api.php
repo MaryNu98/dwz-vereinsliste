@@ -5,7 +5,7 @@
  * Verwaltet die Kommunikation mit der API des Deutschen Schachbundes
  */
 
-class DWZ_API {
+class NuDwz_API {
     
     /**
      * API Base URL
@@ -33,7 +33,7 @@ public static function get_verein_list($vkz, $apiToken) {
         );
     }
 
-    $cache_key = 'dwz_verein_list_' . sanitize_key($vkz);
+    $cache_key = 'nu_dwz_verein_list_' . sanitize_key($vkz);
 
     $cached_data = get_transient($cache_key);
     if ($cached_data !== false) {
@@ -92,7 +92,7 @@ public static function get_verein_list($vkz, $apiToken) {
         !isset($data['spieler']) ||
         !is_array($data['spieler'])
     ) {
-        return new WP_Error(
+            return new WP_Error(
             'parse_error',
             __('Keine Spielerdaten gefunden', 'dwz-verein-list')
         );
@@ -113,12 +113,12 @@ public static function get_verein_list($vkz, $apiToken) {
      */
     public static function clear_cache($vkz = null) {
         if ($vkz) {
-            $cache_key = 'dwz_verein_list_' . sanitize_key($vkz);
+            $cache_key = 'nu_dwz_verein_list_' . sanitize_key($vkz);
             delete_transient($cache_key);
             return true;
         }
 
-        delete_transient( 'dwz_clubs_list' );
+        delete_transient( 'nu_dwz_clubs_list' );
         wp_cache_flush();
 
         return true;

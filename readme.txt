@@ -8,7 +8,7 @@ Requires PHP: 7.4
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Displays a club's DWZ (German rating) list as a widget. Data is fetched from the German Chess Federation API and requires an API token.
+Displays a club's DWZ (German rating) list as a Gutenberg block. Data is fetched from the German Chess Federation (DSB) API and requires an API token.
 
 == Description ==
 
@@ -27,6 +27,18 @@ Features:
 1. Upload the plugin folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' screen in WordPress
 3. Insert the 'DWZ-Liste' block on a page and configure VKZ and API token
+
+== External services ==
+
+This plugin connects to the German Chess Federation (Deutscher Schachbund, DSB) API to retrieve club DWZ data. The plugin sends the club VKZ (Vereinskennziffer) and the configured API token to the DSB API endpoint to fetch the member list.
+
+- Service: Deutscher Schachbund — Vereinslisten API
+- Endpoint used: https://www.schachbund.de/wertungsportal-api/vereinsliste
+- What is sent: the VKZ (club identifier) and the API token (required to access the endpoint)
+- Why: to fetch the public DWZ/Elo data for the requested club to render the block
+- Privacy / Terms: https://www.schachbund.de/datenschutz.html (DSB privacy) and https://www.schachbund.de/impressum.html (DSB imprint)
+
+Make sure you have the right to use the configured API token and that you inform site users about any data handling required by your site.
 
 == Frequently Asked Questions ==
 

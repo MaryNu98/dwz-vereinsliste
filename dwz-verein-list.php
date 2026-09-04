@@ -29,22 +29,22 @@ require_once DWZ_VL_PLUGIN_DIR . 'includes/class-dwz-block.php';
 /**
  * Plugin-Aktivierung
  */
-function dwz_verein_list_activate() {
+function nu_dwz_verein_list_activate() {
 }
-register_activation_hook(__FILE__, 'dwz_verein_list_activate');
+register_activation_hook(__FILE__, 'nu_dwz_verein_list_activate');
 
 /**
  * Plugin-Deaktivierung
  */
-function dwz_verein_list_deactivate() {
+function nu_dwz_verein_list_deactivate() {
 }
-register_deactivation_hook(__FILE__, 'dwz_verein_list_deactivate');
+register_deactivation_hook(__FILE__, 'nu_dwz_verein_list_deactivate');
 
 
 /**
  * CSS-Dateien laden (Frontend)
  */
-function dwz_verein_list_enqueue_styles() {
+function nu_dwz_verein_list_enqueue_styles() {
     wp_enqueue_style(
         'dwz-verein-list-styles',
         DWZ_VL_PLUGIN_URL . 'assets/dwz-styles.css',
@@ -52,12 +52,12 @@ function dwz_verein_list_enqueue_styles() {
         DWZ_VL_VERSION
     );
 }
-add_action('wp_enqueue_scripts', 'dwz_verein_list_enqueue_styles');
+add_action('wp_enqueue_scripts', 'nu_dwz_verein_list_enqueue_styles');
 
 /**
  * Frontend-Script laden
  */
-function dwz_verein_list_enqueue_scripts() {
+function nu_dwz_verein_list_enqueue_scripts() {
     wp_enqueue_script(
         'dwz-verein-list-frontend',
         DWZ_VL_PLUGIN_URL . 'assets/js/frontend.js',
@@ -81,12 +81,12 @@ function dwz_verein_list_enqueue_scripts() {
         )
     );
 }
-add_action('wp_enqueue_scripts', 'dwz_verein_list_enqueue_scripts');
+add_action('wp_enqueue_scripts', 'nu_dwz_verein_list_enqueue_scripts');
 
 /**
  * Block initialisieren und registrieren
  */
-function dwz_verein_list_register_block() {
+function nu_dwz_verein_list_register_block() {
     if ( ! function_exists( 'register_block_type' ) ) {
         return;
     }
@@ -94,16 +94,16 @@ function dwz_verein_list_register_block() {
     register_block_type(
         DWZ_VL_PLUGIN_DIR . 'block.json',
         array(
-            'render_callback' => 'dwz_verein_list_render_block'
+            'render_callback' => 'nu_dwz_verein_list_render_block'
         )
     );
 }
-add_action( 'init', 'dwz_verein_list_register_block', 10 );
+add_action( 'init', 'nu_dwz_verein_list_register_block', 10 );
 
 
 /**
  * Block rendern auf dem Frontend
  */
-function dwz_verein_list_render_block( $attributes ) {
-    return DWZ_Block::render_block( $attributes );
+function nu_dwz_verein_list_render_block( $attributes ) {
+    return NuDwz_Block::render_block( $attributes );
 }

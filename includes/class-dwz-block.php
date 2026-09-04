@@ -5,7 +5,7 @@
  * Gutenberg Block für die Anzeige der DWZ-Liste
  */
 
-class DWZ_Block {
+class NuDwz_Block {
     
     /**
      * Block initialisieren
@@ -55,7 +55,7 @@ class DWZ_Block {
                            '</div>';
             }
             // DWZ-Liste abrufen
-            $data = DWZ_API::get_verein_list($vkz, $apiToken);
+            $data = NuDwz_API::get_verein_list($vkz, $apiToken);
             
             if (is_wp_error($data)) {
                 $output .= '<div class="dwz-block-error">';
@@ -315,7 +315,7 @@ class DWZ_Block {
             $html .= sprintf(
                 /* translators: %s: date (localized), e.g. "11. August 2026, 00:37 Uhr" */
                 esc_html__('Daten vom Deutschen Schachbund (Stand: %s).', 'dwz-verein-list'),
-                $formatted_data_date
+                esc_html($formatted_data_date)
             );
         
         $html .= '</div>';
@@ -506,6 +506,7 @@ class DWZ_Block {
             'KAZ' => 'Kasachstan',
             'KEN' => 'Kenia',
             'KIR' => 'Kiribati',
+            'KOS' => 'Kosovo',
             'KOR' => 'Südkorea',
             'PRK' => 'Nordkorea',
             'KWT' => 'Kuwait',
@@ -549,7 +550,7 @@ class DWZ_Block {
             'OMN' => 'Oman',
             'PAK' => 'Pakistan',
             'PLW' => 'Palau',
-            'PSE' => 'Palästina',
+            'PLE' => 'Palästina',
             'PAN' => 'Panama',
             'PNG' => 'Papua-Neuguinea',
             'PRY' => 'Paraguay',
